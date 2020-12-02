@@ -13,15 +13,21 @@ plugins:
 
 functions:
   doctors:
-    name: hello-world
-    handler: dist/helloworld.entrypoint
+    name: get-doctors
+    handler: dist/lambdas/doctors.handler
     memorySize: 128
     timeout: 10
     environment:
     events:
       - http:
-          path: /{name}
+          path: /doctors/{id}
           method: GET
+          cors: true
       - http:
-          path: /
+          path: /doctors
           method: GET
+          cors: true
+      - http:
+          path: /doctors
+          method: POST
+          cors: true

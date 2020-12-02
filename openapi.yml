@@ -1,0 +1,193 @@
+openapi: 3.0.0
+info:
+  description: This is a Quno backend challenge API
+  version: 1.0.0-oas3
+  title: Quno backend challenge API
+  contact:
+    email: yadav16shyam.k@gmail.com
+tags:
+  - name: developers
+    description: Operations available to regular developers
+paths:
+  '/doctors/{id}':
+    get:
+      tags:
+        - developers
+      summary: get doctor by id
+      operationId: getDoctorById
+      description: |
+        By passing the appropriate id you can get the doctor in the system
+      parameters:
+        - in: header
+          name: x-api-key
+          description: pass the api key
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: id
+          description: pass the id to get doctor
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Doctor'
+        '400':
+          description: bad input parameter
+        '401':
+          description: 'Unauthorized, Invalid api key'
+        '404':
+          description: search not found
+  /doctors:
+    get:
+      tags:
+        - developers
+      summary: searches doctors
+      operationId: searchDoctors
+      description: |
+        By passing in the appropriate options, you can search for
+        available doctors in the system
+      parameters:
+        - in: header
+          name: x-api-key
+          description: pass the api key
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: limit
+          description: pass the limit number to get number of doctors
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - in: query
+          name: offset
+          description: pass the offset number for pagination
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - in: query
+          name: orderBy
+          description: pass the attribute name you want to order by
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: isAsc
+          description: pass 1 to sort data by ascending or -1 for descending
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Doctor'
+        '400':
+          description: bad input parameter
+        '401':
+          description: 'Unauthorized, Invalid api key'
+        '404':
+          description: search not found
+    post:
+      tags:
+        - developers
+      summary: adds doctor
+      operationId: addDoctor
+      description: Adds doctor to the system
+      parameters:
+        - in: header
+          name: x-api-key
+          description: pass the api key
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Doctor'
+        description: Doctor item to add
+      responses:
+        '200':
+          description: doctor created
+        '400':
+          description: 'invalid input, object invalid'
+servers:
+  - url: 'http://localhost:4000/'
+components:
+  schemas:
+    Doctor:
+      type: object
+      required:
+        - name
+        - city
+        - country
+        - avatarUrl
+        - qunoScoreNumber
+        - ratingsAverage
+        - treatmentsLastYear
+        - yearsExperience
+        - basePrice
+      properties:
+        name:
+          type: string
+          example: Dr. Firstname Lastname
+        city:
+          type: string
+          example: Berlin
+        country:
+          type: string
+          example: Germany
+        avatarUrl:
+          type: string
+          format: url
+          example: 'http://abc.com'
+        qunoScoreNumber:
+          type: number
+          format: float32
+          example: 8.5
+          minimum: 0
+          maximum: 10
+        ratingsAverage:
+          type: number
+          format: float32
+          example: 4.2
+          minimum: 0
+          maximum: 5
+        treatmentsLastYear:
+          type: number
+          format: int32
+          example: 2000
+          minimum: 0
+        yearsExperience:
+          type: number
+          format: int32
+          example: 15
+          minimum: 0
+        basePrice:
+          type: number
+          format: float32
+          example: 1255.25
+          minimum: 0
